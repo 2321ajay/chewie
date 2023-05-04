@@ -277,6 +277,8 @@ class _MaterialControlsState extends State<MaterialControls>
                       _buildPosition(iconColor),
                     if (chewieController.allowMuting)
                       _buildMuteButton(controller),
+            				if (!chewieController.isLive) _buildBackwardButton(),
+                    if (!chewieController.isLive) _buildForwardButton(),
                     const Spacer(),
                     if (chewieController.allowFullScreen) _buildExpandButton(),
                   ],
@@ -303,6 +305,60 @@ class _MaterialControlsState extends State<MaterialControls>
     );
   }
 
+  GestureDetector _buildForwardButton() {
+    return GestureDetector(
+      onTap: () {
+        controller.seekTo(
+            Duration(seconds: controller.value.position.inSeconds + 10));
+      },
+      child: AnimatedOpacity(
+        opacity: notifier.hideStuff ? 0.0 : 1.0,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          height: barHeight + (chewieController.isFullScreen ? 15.0 : 0),
+          margin: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.forward_10_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _buildBackwardButton() {
+    return GestureDetector(
+      onTap: () {
+        controller.seekTo(
+            Duration(seconds: controller.value.position.inSeconds - 10));
+      },
+      child: AnimatedOpacity(
+        opacity: notifier.hideStuff ? 0.0 : 1.0,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          height: barHeight + (chewieController.isFullScreen ? 15.0 : 0),
+          margin: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.replay_10_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
   GestureDetector _buildMuteButton(
     VideoPlayerController controller,
   ) {
@@ -422,7 +478,10 @@ class _MaterialControlsState extends State<MaterialControls>
     final position = _latestValue.position;
     final duration = _latestValue.duration;
 
-    return RichText(
+    return Container(
+		padding: EdgeInsets.all(5.0),
+        color: Colors.white.withOpacity(.75),
+		child: RichText(
       text: TextSpan(
         text: '${formatDuration(position)} ',
         children: <InlineSpan>[
@@ -430,18 +489,18 @@ class _MaterialControlsState extends State<MaterialControls>
             text: '/ ${formatDuration(duration)}',
             style: TextStyle(
               fontSize: 14.0,
-              color: Colors.white.withOpacity(.75),
+              color: Colors.black.withOpacity(.75),
               fontWeight: FontWeight.normal,
             ),
           )
         ],
         style: const TextStyle(
           fontSize: 14.0,
-          color: Colors.white,
+          color: Colors.black54,
           fontWeight: FontWeight.bold,
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildSubtitleToggle() {
